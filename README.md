@@ -7,7 +7,8 @@ If you are a teacher, then lets get started and join us by requesting directory 
 
 ### 1. Software Quality Engineering - SQE
 Different code examples will be added in this repository under the SQE Folder. 
-SQE/JUnitExamples/README.md#Calculator and GPA Calculator Examples
+
+1. [Calculator and GPA Calculator Examples](SQE/JUnitExamples/README.md) 
 
 ### 2. Object Oriented Software Engineering
 #### Lab Examples
