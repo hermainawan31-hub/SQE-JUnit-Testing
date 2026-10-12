@@ -43,3 +43,16 @@ The reported average performer is the student whose GPA is closest to the
 cohort's arithmetic mean.
 
 Run the JUnit 5 examples with `mvn test`.
+
+# Enhancements Scenarios
+For each task, do not modify GpaCalculator. Write a failing JUnit 5 test first, implement the smallest change to make it pass, then refactor. Include normal, boundary, and invalid-input tests.
+1. Add a plus/minus grading scale — GradeBand, GradingPolicyManager
+    The university introduces grades such as A-, B+, and C-. Add a grading policy factory for a defined percentage-to-grade table. Test scores exactly at each cutoff and just below it, as well as invalid percentages and an incomplete or invalid policy.
+2. Allow students to drop a course before semester completion — SemesterRecord
+    Add a way to drop a course by code while a semester is in progress. Test dropping an existing course, rejecting an unknown course, rejecting drops after completion, and confirming that a dropped course can be added again if space remains.
+3. Report a student’s completed workload — Student
+    Add methods to report the number of completed semesters and the total credits from completed semesters. Test students with no semesters, a mixture of completed and in-progress semesters, and multiple courses with different credit values. In-progress courses should not count toward completed credits.
+4. Check course prerequisites — new PrerequisiteChecker class
+    Before a student registers for a course, check whether they have passed its required prerequisite courses in completed semesters. Define a passing grade as at least 1.0 grade points. Test a satisfied prerequisite, a missing prerequisite, a prerequisite taken only in an in-progress semester, and a course with no prerequisites.
+5. Determine scholarship eligibility — new ScholarshipEligibilityPolicy class
+    A student qualifies with a cumulative GPA of at least 3.5 and at least 24 completed course credits. Test students who meet both requirements, miss each requirement individually, land exactly on each threshold, and have no completed coursework.
