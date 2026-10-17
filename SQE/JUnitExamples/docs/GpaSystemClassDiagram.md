@@ -1,9 +1,10 @@
-# GPA System UML Class Diagram
+GPA System UML Class Diagram – Plus/Minus Grading Scale
 
-The diagram shows production types in `org.example.tdd.gpasystem` and test
-support types in the test source set. Solid diamonds indicate composition,
-open diamonds aggregation, solid arrows association, dashed arrows dependency,
-and hollow triangles interface inheritance/realization.
+This UML class diagram represents the GPA System in org.example.tdd.gpasystem, including the implementation of Scenario 1: Plus/Minus Grading Scale.
+
+The enhanced system introduces grades such as A-, B+, B-, C+, C-, D+, and D-. The GradingPolicyManager provides a factory method, plusMinusFourPointScale(), defining percentage-to-grade mappings.
+
+JUnit tests verify exact grading cutoffs, percentages just below cutoffs, invalid percentages, incomplete policies, and invalid grading configurations.
 
 ```mermaid
 classDiagram
