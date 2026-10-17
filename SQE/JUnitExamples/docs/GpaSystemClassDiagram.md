@@ -9,117 +9,148 @@ and hollow triangles interface inheritance/realization.
 classDiagram
     direction TB
 
-    class IPerson {
-        <<interface>>
-        +getId() String
-        +getName() String
-    }
+    namespace Production {
+        class IPerson {
+            <<interface>>
+            +getId() String
+            +getName() String
+        }
 
-    class IStudent {
-        <<interface>>
-        +getSemester(number) SemesterRecord
-        +getSemesters() Map
-    }
+        class IStudent {
+            <<interface>>
+            +getSemester(number) SemesterRecord
+            +getSemesters() Map
+        }
 
-    class Student {
-        -id String
-        -name String
-        -semesters Map
-        +addSemester(semester) void
-        +getSemester(number) SemesterRecord
-        +getSemesters() Map
-    }
+        class Student {
+            -id String
+            -name String
+            -semesters Map
+            +addSemester(semester) void
+            +getSemester(number) SemesterRecord
+            +getSemesters() Map
+        }
 
-    class SemesterRecord {
-        -semesterNumber int
-        -courseResults List
-        -completed boolean
-        +addCourseResult(result) void
-        +complete() void
-        +isCompleted() boolean
-        +getCourseResults() List
-    }
+        class SemesterRecord {
+            -semesterNumber int
+            -courseResults List
+            -completed boolean
+            +addCourseResult(result) void
+            +complete() void
+            +isCompleted() boolean
+            +getCourseResults() List
+        }
 
-    class Course {
-        -code String
-        -title String
-        -credits double
-    }
+        class Course {
+            -code String
+            -title String
+            -credits double
+        }
 
-    class CourseResult {
-        -percentage double
-        -course Course
-        -grade Grade
-        +getPercentage() double
-        +getCourse() Course
-        +getGrade() Grade
-    }
+        class CourseResult {
+            -percentage double
+            -course Course
+            -grade Grade
+            +getPercentage() double
+            +getCourse() Course
+            +getGrade() Grade
+        }
 
-    class Grade {
-        -letter String
-        -points double
-        +getLetter() String
-        +getPoints() double
-    }
+        class Grade {
+            -letter String
+            -points double
+            +Grade(letter, points)
+            +getLetter() String
+            +getPoints() double
+        }
 
-    class GradeBand {
-        -minimumPercentage double
-        -grade Grade
-        +getMinimumPercentage() double
-        +getGrade() Grade
-    }
+        class GradeBand {
+            -minimumPercentage double
+            -grade Grade
+            +GradeBand(minimumPercentage, grade)
+            +getMinimumPercentage() double
+            +getGrade() Grade
+        }
 
-    class GradingPolicyManager {
-        -gradeBands List
-        +standardFourPointScale() GradingPolicyManager
-        +getGradeForPercentage(percentage) Grade
-        +createCourseResult(course, percentage) CourseResult
-    }
+        class GradingPolicyManager {
+            -gradeBands List~GradeBand~
+            +GradingPolicyManager(gradeBands)
+            +standardFourPointScale() GradingPolicyManager
+            +plusMinusFourPointScale() GradingPolicyManager
+            +getGradeForPercentage(percentage) Grade
+            +createCourseResult(course, percentage) CourseResult
+        }
 
-    class GpaCalculator {
-        +calculateSemesterGpa(student, semesterNumber) double
-        +calculateCumulativeGpa(student) double
-        +semesterPerformance(students, semesterNumber) StudentPerformanceSummary
-        +coursePerformance(students, courseCode) StudentPerformanceSummary
-    }
+        class GpaCalculator {
+            +calculateSemesterGpa(student, semesterNumber) double
+            +calculateCumulativeGpa(student) double
+            +semesterPerformance(students, semesterNumber) StudentPerformanceSummary
+            +coursePerformance(students, courseCode) StudentPerformanceSummary
+        }
 
-    class StudentGpa {
-        -student IStudent
-        -gpa double
-        +getStudent() IStudent
-        +getGpa() double
-    }
+        class StudentGpa {
+            -student IStudent
+            -gpa double
+            +getStudent() IStudent
+            +getGpa() double
+        }
 
-    class StudentPerformanceSummary {
-        -performances List
-        -averageGpa double
-        -best StudentGpa
-        -worst StudentGpa
-        -averagePerformer StudentGpa
-        +getPerformances() List
-        +getAverageGpa() double
-        +getBest() StudentGpa
-        +getWorst() StudentGpa
-        +getAveragePerformer() StudentGpa
+        class StudentPerformanceSummary {
+            -performances List
+            -averageGpa double
+            -best StudentGpa
+            -worst StudentGpa
+            -averagePerformer StudentGpa
+            +getPerformances() List
+            +getAverageGpa() double
+            +getBest() StudentGpa
+            +getWorst() StudentGpa
+            +getAveragePerformer() StudentGpa
+        }
     }
 
     IPerson <|-- IStudent : extends
     IStudent <|.. Student : implements
+
     Student "1" o-- "0..8" SemesterRecord : aggregates
     SemesterRecord "1" *-- "0..5" CourseResult : owns
+
     CourseResult "1" --> "1" Course : result for
     CourseResult "1" --> "1" Grade : awarded
-    GradingPolicyManager "1" o-- "1..*" GradeBand : applies
-    GradeBand "1" --> "1" Grade : maps to
 
-    GpaCalculator ..> IStudent : accepts injected student(s)
+    GradingPolicyManager "1" o-- "1..*" GradeBand : manages
+    GradeBand "1" --> "1" Grade : maps to
+    GradingPolicyManager ..> Grade : returns
+    GradingPolicyManager ..> CourseResult : creates
+
+    GpaCalculator ..> IStudent : accepts
     GpaCalculator ..> CourseResult : calculates from
     GpaCalculator ..> StudentGpa : creates rankings
     GpaCalculator ..> StudentPerformanceSummary : returns
+
     StudentGpa "0..*" --> "1" IStudent : describes
     StudentPerformanceSummary "1" *-- "1..*" StudentGpa : contains
 
-    namespace test {
+    namespace Testing {
+        class GradeBandTest {
+            +testValidGradeBand() void
+            +testNegativePercentage() void
+            +testPercentageAbove100() void
+            +testNaNPercentage() void
+            +testNullGrade() void
+        }
+
+        class GradingPolicyManagerTest {
+            +testGradeCutoffs() void
+            +testMinimumAndMaximum() void
+            +testInvalidPercentages() void
+            +testEmptyPolicy() void
+            +testIncompletePolicy() void
+            +testDuplicateCutoff() void
+            +testNullPolicy() void
+            +testNullGradeBand() void
+        }
+
         class FakeStudent {
             -id String
             -name String
@@ -145,13 +176,22 @@ classDiagram
         }
     }
 
+    GradeBandTest ..> GradeBand : tests
+    GradeBandTest ..> Grade : uses
+
+    GradingPolicyManagerTest ..> GradingPolicyManager : tests
+    GradingPolicyManagerTest ..> GradeBand : validates
+    GradingPolicyManagerTest ..> Grade : uses
+
     IStudent <|.. FakeStudent : implements
-    FakeStudent "1" o-- "0..8" SemesterRecord : supplies test data
+    FakeStudent "1" o-- "0..8" SemesterRecord : test data
+
     TestDataGenerator ..> Student : creates
     TestDataGenerator ..> GradingPolicyManager : uses
-    GpaCalculatorTest ..> GpaCalculator : unit tests
-    GpaCalculatorTest ..> FakeStudent : injects fake
-    GpaCalculatorTest ..> TestDataGenerator : builds fixtures
+
+    GpaCalculatorTest ..> GpaCalculator : tests
+    GpaCalculatorTest ..> FakeStudent : injects
+    GpaCalculatorTest ..> TestDataGenerator : fixtures
 ```
 
 ## Behavior and constraints
